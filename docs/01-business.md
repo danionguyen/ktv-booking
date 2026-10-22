@@ -89,7 +89,7 @@ Hệ thống phục vụ **một chuỗi karaoke có nhiều chi nhánh**:
 | WEEKEND (T7, CN) | cả ngày | 220.000đ/giờ |
 | HOLIDAY | cả ngày | 250.000đ/giờ |
 
-- **BR-22** Phụ thu loại phòng: VIP ×1.5, Party ×2 (hoặc cấu hình giá riêng từng loại phòng).
+- **BR-22** Mỗi loại phòng có **bảng giá riêng** (`price_rules.room_type_id`), không dùng hệ số. Giá mẫu: VIP = Standard × 1.5, Party = Standard × 2 (xem [FD-PRC-01](function-design/PRC/FD-PRC-01-calculate-booking-price.md)).
 - **BR-23** Tổng tiền = tiền phòng + tiền đồ ăn uống − giảm giá voucher. Làm tròn đến 1.000đ.
 - **BR-24** Đơn giá được **chốt tại thời điểm đặt** (lưu vào `bookings.room_amount`, `booking_items.unit_price`); admin đổi giá sau đó không ảnh hưởng đơn cũ.
 
@@ -105,6 +105,7 @@ Hệ thống phục vụ **một chuỗi karaoke có nhiều chi nhánh**:
 - **BR-41** `CASH` (trả tại quầy): đơn chuyển `CONFIRMED` ngay nhưng sẽ **tự hủy nếu khách không check-in sau 15 phút** kể từ giờ bắt đầu (no-show).
 - **BR-42** Kết quả VNPay xác nhận qua **IPN** (server-to-server), không tin vào trang return phía client. Xử lý IPN phải **idempotent** theo `txn_ref`.
 - **BR-43** Tiền đồ ăn uống gọi thêm tại quầy và giờ gia hạn được thanh toán khi check-out.
+- **BR-44** Khi chọn VNPay, đơn chuyển `PENDING_PAYMENT` với hạn **15 phút** (`hold_expires_at = now + 15'`, khớp `vnp_ExpireDate`); quá hạn chưa có IPN thành công → `EXPIRED`.
 
 ### 4.6 Hủy đặt phòng
 | Thời điểm hủy (so với giờ bắt đầu) | Hoàn tiền (nếu đã trả VNPay) |

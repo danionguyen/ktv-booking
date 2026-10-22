@@ -19,6 +19,7 @@ Hệ thống đặt phòng karaoke trực tuyến cho chuỗi KTV nhiều chi nh
 | [01-business.md](01-business.md)                                     | Nghiệp vụ: vai trò, tính năng, quy tắc đặt phòng, tính giá, hủy, trạng thái |
 | [02-architecture.md](02-architecture.md)                             | Cấu trúc: kiến trúc, thiết kế dữ liệu, API, cấu trúc thư mục                |
 | [03-tech-stack.md](03-tech-stack.md)                                 | Ngôn ngữ & công nghệ, quy ước code, Git workflow                            |
+| [function-design/README.md](function-design/README.md)               | Function Design: quy ước đặt tên, 40 chức năng, danh sách màn hình          |
 | [plan/00-overview.md](plan/00-overview.md)                           | Tổng quan kế hoạch, phân công, ưu tiên, rủi ro                              |
 | [plan/phase-1-foundation.md](plan/phase-1-foundation.md)             | Tuần 1 – Nền tảng & thiết kế                                                |
 | [plan/phase-2-core-booking.md](plan/phase-2-core-booking.md)         | Tuần 2 – Luồng đặt phòng cốt lõi                                            |

@@ -115,7 +115,10 @@ reviews(
   comment TEXT, created_at TIMESTAMPTZ
 )
 
-refresh_tokens(id BIGSERIAL PK, user_id FK, token VARCHAR UNIQUE, expires_at TIMESTAMPTZ, revoked BOOLEAN)
+refresh_tokens(id BIGSERIAL PK, user_id FK, token_hash VARCHAR UNIQUE, expires_at TIMESTAMPTZ, revoked BOOLEAN)
+
+password_reset_tokens(id BIGSERIAL PK, user_id FK, token_hash VARCHAR UNIQUE,
+                      expires_at TIMESTAMPTZ, used_at TIMESTAMPTZ NULL, created_at TIMESTAMPTZ)
 ```
 
 ### 2.3 Chống đặt trùng (BR-05, BR-06)
@@ -164,14 +167,16 @@ CREATE INDEX idx_bookings_hold ON bookings (hold_expires_at) WHERE status = 'HOL
 |---|---|---|---|
 | **Auth** | POST | `/auth/register` · `/auth/login` · `/auth/refresh` · `/auth/logout` | Public |
 | | POST | `/auth/forgot-password` · `/auth/reset-password` | Public |
-| **User** | GET/PUT | `/users/me` | Customer+ |
-| **Branch/Room** | GET | `/branches` · `/branches/{id}` | Public |
-| | GET | `/branches/{id}/rooms` (kèm trạng thái hiện tại cho sơ đồ) | Public |
-| | GET | `/rooms/availability?branchId&date&start&hours&people` | Public |
+| **User** | GET/PUT | `/users/me` · PUT `/users/me/password` | Customer+ |
+| **Branch/Room** | GET | `/branches` · `/branches/{id}` · `/branches/{id}/price-table` | Public |
+| | GET | `/branches/{id}/rooms?start&end` (layout + trạng thái cho sơ đồ) | Public |
+| | GET | `/rooms/{id}` · `/room-types` | Public |
+| | GET | `/rooms/availability?branchId&start&hours&people` | Public |
 | | GET | `/rooms/{id}/price-quote?start&hours` | Public |
+| **Menu** | GET | `/menu-items?category&available=true` | Public |
 | **Booking** | POST | `/bookings/hold` | Customer |
 | | DELETE | `/bookings/{id}/hold` | Customer |
-| | POST | `/bookings/{id}/items` (đặt trước đồ ăn uống) | Customer |
+| | PUT | `/bookings/{id}/items` (đặt trước đồ ăn uống – thay thế toàn bộ) | Customer |
 | | POST | `/bookings/{id}/confirm` `{ paymentMethod, voucherCode }` | Customer |
 | | GET | `/bookings/me` · `/bookings/{id}` | Customer |
 | | POST | `/bookings/{id}/cancel` | Customer |
@@ -180,16 +185,20 @@ CREATE INDEX idx_bookings_hold ON bookings (hold_expires_at) WHERE status = 'HOL
 | | GET | `/payments/vnpay/ipn` | VNPay |
 | **Voucher** | POST | `/vouchers/validate` | Customer |
 | **Review** | POST | `/reviews` · GET `/rooms/{id}/reviews` | Customer / Public |
-| **Staff** | GET | `/staff/bookings/today` (timeline) | Staff |
+| **Staff** | GET | `/staff/bookings/timeline?date` | Staff |
 | | POST | `/staff/bookings` (walk-in) | Staff |
-| | POST | `/staff/bookings/{id}/check-in` · `/check-out` · `/extend` | Staff |
-| | POST | `/staff/bookings/{id}/items` | Staff |
+| | POST | `/staff/bookings/{id}/check-in` · `/check-out` · `/extend` · GET `/extend-options` | Staff |
+| | POST / DELETE | `/staff/bookings/{id}/items` · `/staff/bookings/{id}/items/{itemId}` | Staff |
 | | GET | `/staff/bookings/{id}/invoice` | Staff |
-| **Admin** | CRUD | `/admin/branches` · `/admin/rooms` · `/admin/room-types` · `/admin/price-rules` · `/admin/holidays` | Admin |
-| | CRUD | `/admin/menu-items` · `/admin/vouchers` · `/admin/users` | Admin |
+| **Admin** | CRUD | `/admin/branches` · `/admin/rooms` (+ PATCH `/status`) · `/admin/room-types` · `/admin/holidays` | Admin |
+| | GET/PUT | `/admin/room-types/{id}/price-rules` (thay thế toàn bộ bảng giá) | Admin |
+| | CRUD | `/admin/menu-items` (+ PATCH `/availability`) · `/admin/vouchers` · `/admin/users` (+ PATCH `/status`, PUT `/password`) | Admin |
+| | POST | `/admin/uploads/images` | Admin |
 | | PUT | `/admin/branches/{id}/layout` (lưu vị trí phòng) | Admin |
-| | GET | `/admin/bookings` (lọc, phân trang) · POST `/admin/bookings/{id}/cancel` | Admin |
-| | GET | `/admin/stats/revenue?from&to&groupBy` · `/admin/stats/occupancy` · `/admin/stats/top-rooms` · `/admin/stats/top-items` | Admin |
+| | GET | `/admin/bookings` (lọc, phân trang) · `/admin/bookings/{id}` · POST `/admin/bookings/{id}/cancel` | Admin |
+| | GET | `/admin/stats/summary` · `/admin/stats/revenue?from&to&groupBy` · `/admin/stats/occupancy` · `/admin/stats/top-rooms` · `/admin/stats/top-items` | Admin |
+
+Chi tiết request/response từng endpoint: xem [function-design/](function-design/README.md).
 
 ### 3.3 WebSocket
 
@@ -207,15 +216,27 @@ Backend phát sự kiện **sau khi transaction commit** (`@TransactionalEventLi
 | Code | HTTP | Ý nghĩa |
 |---|---|---|
 | `VALIDATION_ERROR` | 400 | Dữ liệu không hợp lệ |
+| `INVALID_SIGNATURE` | 400 | Chữ ký VNPay không hợp lệ (trang return) |
 | `UNAUTHORIZED` / `TOKEN_EXPIRED` | 401 | Chưa đăng nhập / token hết hạn |
+| `INVALID_CREDENTIALS` | 401 | Sai email hoặc mật khẩu |
+| `INVALID_TOKEN` | 401 | Refresh token / token đặt lại mật khẩu không hợp lệ |
 | `FORBIDDEN` | 403 | Không đủ quyền |
+| `ACCOUNT_DISABLED` | 403 | Tài khoản bị khóa |
 | `NOT_FOUND` | 404 | Không tìm thấy |
-| `ROOM_NOT_AVAILABLE` | 409 | Phòng đã bị giữ / đặt |
+| `ROOM_NOT_AVAILABLE` | 409 | Phòng đã bị giữ / đặt / đang dọn |
 | `HOLD_LIMIT_EXCEEDED` | 409 | Vượt quá 2 lượt giữ chỗ |
+| `EMAIL_ALREADY_EXISTS` | 409 | Email đã được dùng |
+| `DUPLICATE_CODE` | 409 | Trùng mã / tên (CRUD) |
+| `RESOURCE_IN_USE` | 409 | Không xóa được vì đang được tham chiếu |
 | `HOLD_EXPIRED` | 410 | Giữ chỗ đã hết hạn |
 | `INVALID_STATE` | 422 | Thao tác không hợp lệ với trạng thái hiện tại |
 | `CANCEL_NOT_ALLOWED` | 422 | Quá thời hạn hủy |
-| `VOUCHER_INVALID` | 422 | Voucher hết hạn / hết lượt / không đủ điều kiện |
+| `VOUCHER_INVALID` | 422 | Voucher hết hạn / hết lượt / không đủ điều kiện (`details.reason`) |
+| `PRICE_NOT_CONFIGURED` | 422 | Chưa cấu hình giá cho khung giờ |
+| `ITEM_UNAVAILABLE` | 422 | Món không tồn tại / ngừng bán |
+| `CHECKIN_TOO_EARLY` | 422 | Check-in sớm hơn 15 phút |
+| `REVIEW_NOT_ALLOWED` | 409 / 422 | Đã đánh giá / không đủ điều kiện đánh giá |
+| `PAYMENT_GATEWAY_ERROR` | 502 | Không tạo được giao dịch VNPay |
 
 ## 4. Cấu trúc thư mục
 
