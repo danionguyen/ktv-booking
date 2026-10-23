@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KTV Booking</title>
+    <script>
+      // Gắn data-theme (+ class dark cho Đen & Vàng) trước khi render để không nháy sai theme (khớp src/stores/themeStore.ts)
+      try {
+        var t = localStorage.getItem('ktv-theme')
+        if (t !== 'violet' && t !== 'ivory') t = 'gold'
+        document.documentElement.dataset.theme = t
+        if (t === 'gold') document.documentElement.classList.add('dark')
+      } catch (e) {
+        document.documentElement.classList.add('dark')
+      }
+    </script>
+    <script type="module" crossorigin src="/ktv-booking/assets/index-DdjPJvrf.js"></script>
+    <link rel="stylesheet" crossorigin href="/ktv-booking/assets/index-Bpl7HG3a.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
