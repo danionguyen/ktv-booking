@@ -274,13 +274,16 @@ ktv-booking/
 ├── frontend/
 │   ├── package.json
 │   ├── vite.config.ts
+│   ├── components.json            # cấu hình shadcn/ui
 │   └── src/
-│       ├── main.tsx · App.tsx
+│       ├── main.tsx · App.tsx · index.css  # index.css: Tailwind + theme token
 │       ├── api/                   # axios instance, interceptors, endpoint functions
 │       ├── hooks/                 # useAuth, useRoomStatus (WebSocket), ...
 │       ├── stores/                # Zustand: auth, booking draft
-│       ├── components/            # UI dùng chung
-│       ├── layouts/               # CustomerLayout, StaffLayout, AdminLayout
+│       ├── components/            # UI dùng chung (UserMenu, FullPageSpinner, ...)
+│       │   └── ui/                # component shadcn/ui (Radix UI) – button, input, card, ...
+│       ├── lib/                   # utils.ts: cn() ghép class Tailwind
+│       ├── layouts/               # CustomerLayout, StaffLayout, AdminLayout (dùng chung DashboardLayout)
 │       ├── routes/                # router, ProtectedRoute, RoleGuard
 │       ├── features/
 │       │   └── room-map/          # ⭐ RoomMap, RoomCell, HoldCountdown, LayoutEditor
@@ -300,7 +303,7 @@ ktv-booking/
 
 | Môi trường | Frontend | Backend | Database |
 |---|---|---|---|
-| Local | `npm run dev` (5173) | `./mvnw spring-boot:run` (8080) | Docker Postgres (5432) |
+| Local | `yarn dev` (5173) | `./mvnw spring-boot:run` (8080) | Docker Postgres (5432) |
 | Production | Vercel | Render / Railway / VPS (Docker) | Postgres managed (Neon / Railway) |
 
 Biến môi trường chính: `DB_URL`, `DB_USER`, `DB_PASSWORD`, `JWT_SECRET`, `VNPAY_TMN_CODE`, `VNPAY_HASH_SECRET`, `VNPAY_RETURN_URL`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `FRONTEND_URL`, `VITE_API_URL`, `VITE_WS_URL`.

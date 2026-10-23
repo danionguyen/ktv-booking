@@ -1,0 +1,36 @@
+/** Query key tập trung — dùng để invalidate đúng phạm vi sau mutation. */
+export const qk = {
+  me: ['me'] as const,
+  branches: ['branches'] as const,
+  branch: (id: number) => ['branches', id] as const,
+  priceTable: (branchId: number) => ['branches', branchId, 'price-table'] as const,
+  roomMap: (branchId: number, start?: string, end?: string) =>
+    ['room-map', branchId, start, end] as const,
+  roomTypes: ['room-types'] as const,
+  room: (id: number) => ['rooms', id] as const,
+  roomReviews: (id: number) => ['rooms', id, 'reviews'] as const,
+  priceQuote: (roomId: number, start: string, hours: number) =>
+    ['price-quote', roomId, start, hours] as const,
+  availability: (q: object) => ['availability', q] as const,
+  menu: (params?: object) => ['menu', params] as const,
+  myBookings: (group: string, page: number) => ['bookings', 'me', group, page] as const,
+  booking: (id: number) => ['bookings', id] as const,
+  timeline: (date: string, branchId?: number) => ['staff', 'timeline', date, branchId] as const,
+  staffBooking: (id: number) => ['staff', 'bookings', id] as const,
+  extendOptions: (id: number) => ['staff', 'bookings', id, 'extend'] as const,
+  invoice: (id: number) => ['staff', 'bookings', id, 'invoice'] as const,
+  admin: {
+    all: ['admin'] as const,
+    branches: ['admin', 'branches'] as const,
+    roomTypes: ['admin', 'room-types'] as const,
+    priceRules: (id: number) => ['admin', 'room-types', id, 'price-rules'] as const,
+    rooms: (branchId?: number) => ['admin', 'rooms', branchId] as const,
+    holidays: ['admin', 'holidays'] as const,
+    menu: ['admin', 'menu'] as const,
+    vouchers: ['admin', 'vouchers'] as const,
+    users: (params: object) => ['admin', 'users', params] as const,
+    bookings: (params: object) => ['admin', 'bookings', params] as const,
+    booking: (id: number) => ['admin', 'bookings', id] as const,
+    stats: (name: string, params: object) => ['admin', 'stats', name, params] as const,
+  },
+}

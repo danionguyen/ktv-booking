@@ -15,7 +15,7 @@ Cả team thống nhất yêu cầu, thiết kế; dựng xong bộ khung BE/FE;
 | KTV-06 | Khởi tạo Spring Boot: cấu trúc package, `ApiResponse`, `GlobalExceptionHandler`, Swagger, CORS | A | 0,5 ngày | KTV-03 |
 | KTV-07 | Auth: register, login, refresh, logout, JWT filter, phân quyền role | A | 2 ngày | KTV-06 |
 | KTV-08 | CRUD chi nhánh, loại phòng, phòng (API admin + API public) | B | 2 ngày | KTV-06 |
-| KTV-09 | Khởi tạo React: Vite, router, layouts, Ant Design theme, axios + interceptor refresh token | C | 1 ngày | KTV-03 |
+| KTV-09 | Khởi tạo React: Vite, router, layouts, Tailwind + shadcn/ui theme, axios + interceptor refresh token | C | 1 ngày | KTV-03 |
 | KTV-10 | Trang đăng ký, đăng nhập, hồ sơ; `ProtectedRoute`, `RoleGuard` | C | 1,5 ngày | KTV-09 |
 | KTV-11 | Khung trang admin (layout, sidebar, bảng CRUD dùng chung) | D | 1 ngày | KTV-09 |
 | KTV-12 | Trang admin: quản lý chi nhánh, loại phòng, phòng | D | 1,5 ngày | KTV-11, KTV-08 |

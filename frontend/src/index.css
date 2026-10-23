@@ -1,0 +1,268 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@fontsource-variable/inter';
+
+/* Theme tối (Đen & Vàng) gắn thêm class .dark để các biến thể dark: vẫn chạy */
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * 3 theme lấy từ Figma "KTV Booking – UI" (biến của frame SCR-C09 / SCR-C07a và bản "· Theme …").
+ * Mỗi theme chỉ khai báo token gốc của Figma; phần ánh xạ sang biến shadcn nằm ở :root bên dưới.
+ * Đổi theme bằng <html data-theme="gold|violet|ivory"> (src/stores/themeStore.ts).
+ */
+:root,
+[data-theme='gold'] {
+  /* Đen & Vàng — theme gốc */
+  --fg-bg-layout: #0e0b07;
+  --fg-bg-container: #1a150e;
+  --fg-border: #4a3b1f;
+  --fg-text-primary: #f8f0dc;
+  --fg-text-secondary: #bfaf8a;
+  --fg-text-link: #e8c766;
+  --fg-brand: #d4af37;
+  --fg-brand-soft: #2e2412;
+  --fg-on-brand: #1a1206;
+  --fg-accent: #d4af37;
+  --fg-on-accent: #1a1206;
+  --fg-grad-primary: linear-gradient(135deg, #f7e7a1 0%, #d4af37 50%, #9c7a22 100%);
+  --fg-grad-accent: linear-gradient(135deg, #f7e7a1 0%, #d4af37 50%, #9c7a22 100%);
+  --fg-grad-bg: linear-gradient(160deg, #1c150a 0%, #0b0906 55%, #1a1206 100%);
+  /* Khối hero / panel đăng nhập: ánh vàng góc trên trái */
+  --fg-grad-hero:
+    radial-gradient(90% 70% at 25% 20%, rgb(212 175 55 / 0.3), transparent 70%),
+    linear-gradient(150deg, #3a2a10 0%, #1a130a 55%, #120e08 100%);
+  --fg-on-hero: #f8f0dc;
+  --fg-on-hero-muted: #bfaf8a;
+  /* Sidebar quầy / admin (bg/sider) */
+  --fg-sider: linear-gradient(180deg, #221a0b 0%, #060504 100%);
+  --fg-sider-text: #bfaf8a;
+  --fg-sider-title: #fbefc8;
+  --fg-sider-dot: #3a2e16;
+  --fg-sider-active: var(--fg-grad-primary);
+  --fg-sider-on-active: #1a1206;
+  --fg-available: #9bd27a;
+  --fg-available-bg: #17210f;
+  --fg-hold: #ff9f43;
+  --fg-hold-bg: #2f1e0b;
+  --fg-booked: #f0605d;
+  --fg-booked-bg: #301415;
+  --fg-maintenance: #8f8778;
+  --fg-maintenance-bg: #221e17;
+  /* Tag xanh "Đã xác nhận" */
+  --fg-info: #6cb4ff;
+  --fg-info-bg: #0f1b2b;
+  /* Màu biểu đồ: brand #d4af37 quá sáng trên nền tối → dùng sắc vàng đậm hơn (đã chạy validator) */
+  --fg-chart: #b8892b;
+  color-scheme: dark;
+}
+
+[data-theme='violet'] {
+  /* Tím cổ điển */
+  --fg-bg-layout: #f5f5f7;
+  --fg-bg-container: #ffffff;
+  --fg-border: #e3e3e8;
+  --fg-text-primary: #1f1f24;
+  --fg-text-secondary: #6b6b76;
+  --fg-text-link: #722ed1;
+  --fg-brand: #722ed1;
+  --fg-brand-soft: #f4ecff;
+  --fg-on-brand: #ffffff;
+  --fg-accent: #722ed1;
+  --fg-on-accent: #ffffff;
+  --fg-grad-primary: linear-gradient(135deg, #722ed1, #722ed1);
+  --fg-grad-accent: linear-gradient(135deg, #722ed1, #722ed1);
+  --fg-grad-bg: linear-gradient(#f5f5f7, #f5f5f7);
+  --fg-grad-hero: linear-gradient(135deg, #722ed1 0%, #6526c4 50%, #531dab 100%);
+  --fg-on-hero: #ffffff;
+  --fg-on-hero-muted: rgb(255 255 255 / 0.75);
+  --fg-sider: linear-gradient(#1c1430, #1c1430);
+  --fg-sider-text: #b9b0cf;
+  --fg-sider-title: #ffffff;
+  --fg-sider-dot: #4a3d6b;
+  --fg-sider-active: var(--fg-grad-primary);
+  --fg-sider-on-active: #ffffff;
+  --fg-available: #389e0d;
+  --fg-available-bg: #f6ffed;
+  --fg-hold: #d48806;
+  --fg-hold-bg: #fffbe6;
+  --fg-booked: #cf1322;
+  --fg-booked-bg: #fff1f0;
+  --fg-maintenance: #595959;
+  --fg-maintenance-bg: #f0f0f0;
+  --fg-info: #1677ff;
+  --fg-info-bg: #e6f4ff;
+  --fg-chart: #722ed1;
+  color-scheme: light;
+}
+
+[data-theme='ivory'] {
+  /* Ivory & Gold */
+  --fg-bg-layout: #faf7f0;
+  --fg-bg-container: #ffffff;
+  --fg-border: #e8e1d0;
+  --fg-text-primary: #1b2a4a;
+  --fg-text-secondary: #6b7280;
+  --fg-text-link: #1b2a4a;
+  --fg-brand: #1b2a4a;
+  --fg-brand-soft: #f6eed6;
+  --fg-on-brand: #ffffff;
+  --fg-accent: #c9a227;
+  --fg-on-accent: #1b2a4a;
+  --fg-grad-primary: linear-gradient(135deg, #24375e 0%, #1b2a4a 50%, #15213b 100%);
+  --fg-grad-accent: linear-gradient(135deg, #e9d48a 0%, #c9a227 50%, #a8861a 100%);
+  --fg-grad-bg: linear-gradient(#faf7f0, #faf7f0);
+  --fg-grad-hero:
+    radial-gradient(90% 70% at 25% 20%, rgb(201 162 39 / 0.22), transparent 70%),
+    linear-gradient(135deg, #1b2a4a 0%, #24375e 50%, #1b2a4a 100%);
+  --fg-on-hero: #ffffff;
+  --fg-on-hero-muted: rgb(255 255 255 / 0.75);
+  --fg-sider: linear-gradient(#1b2a4a, #1b2a4a);
+  --fg-sider-text: #c3cbdb;
+  --fg-sider-title: #ffffff;
+  --fg-sider-dot: #3b4c70;
+  --fg-sider-active: var(--fg-grad-accent);
+  --fg-sider-on-active: #1b2a4a;
+  --fg-available: #2f8a3b;
+  --fg-available-bg: #f1f8ee;
+  --fg-hold: #c27c0e;
+  --fg-hold-bg: #fcf5e3;
+  --fg-booked: #c0262d;
+  --fg-booked-bg: #fceeee;
+  --fg-maintenance: #6b6b6b;
+  --fg-maintenance-bg: #f0eeea;
+  --fg-info: #2563eb;
+  --fg-info-bg: #eef4ff;
+  /* Navy quá tối và gần xám để làm cột biểu đồ → dùng vàng nhấn của theme */
+  --fg-chart: #c9a227;
+  color-scheme: light;
+}
+
+/* Ánh xạ token Figma → biến shadcn (áp dụng cho mọi theme) */
+:root {
+  --background: var(--fg-bg-layout);
+  --foreground: var(--fg-text-primary);
+  --card: var(--fg-bg-container);
+  --card-foreground: var(--fg-text-primary);
+  --popover: var(--fg-bg-container);
+  --popover-foreground: var(--fg-text-primary);
+  --primary: var(--fg-brand);
+  --primary-foreground: var(--fg-on-brand);
+  --secondary: var(--fg-brand-soft);
+  --secondary-foreground: var(--fg-text-primary);
+  --muted: var(--fg-brand-soft);
+  --muted-foreground: var(--fg-text-secondary);
+  --accent: var(--fg-brand-soft);
+  --accent-foreground: var(--fg-text-primary);
+  --destructive: var(--fg-booked);
+  --border: var(--fg-border);
+  --input: var(--fg-border);
+  --ring: var(--fg-accent);
+  --chart-1: var(--fg-chart);
+  --radius: 0.5rem;
+  --sidebar: var(--fg-bg-container);
+  --sidebar-foreground: var(--fg-text-primary);
+  --sidebar-primary: var(--fg-brand);
+  --sidebar-primary-foreground: var(--fg-on-brand);
+  --sidebar-accent: var(--fg-brand-soft);
+  --sidebar-accent-foreground: var(--fg-text-primary);
+  --sidebar-border: var(--fg-border);
+  --sidebar-ring: var(--fg-accent);
+}
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+
+  /* Token riêng của Figma: text-link, bg-brand-accent, bg-room-available-bg, ... */
+  --color-link: var(--fg-text-link);
+  --color-brand-accent: var(--fg-accent);
+  --color-on-accent: var(--fg-on-accent);
+  --color-room-available: var(--fg-available);
+  --color-room-available-bg: var(--fg-available-bg);
+  --color-room-held: var(--fg-hold);
+  --color-room-held-bg: var(--fg-hold-bg);
+  --color-room-booked: var(--fg-booked);
+  --color-room-booked-bg: var(--fg-booked-bg);
+  --color-room-maintenance: var(--fg-maintenance);
+  --color-room-maintenance-bg: var(--fg-maintenance-bg);
+  --color-info: var(--fg-info);
+  --color-info-bg: var(--fg-info-bg);
+  --color-on-hero: var(--fg-on-hero);
+  --color-on-hero-muted: var(--fg-on-hero-muted);
+  --color-sider-text: var(--fg-sider-text);
+  --color-sider-title: var(--fg-sider-title);
+  --color-sider-dot: var(--fg-sider-dot);
+  --color-sider-on-active: var(--fg-sider-on-active);
+
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@layer base {
+  body {
+    @apply text-foreground antialiased;
+    background-color: var(--background);
+    background-image: var(--fg-grad-bg);
+    background-attachment: fixed;
+  }
+  * {
+    @apply border-border outline-ring/50;
+  }
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* Gradient của Figma: nút chính, hero */
+@utility bg-grad-primary {
+  background-image: var(--fg-grad-primary);
+}
+@utility bg-hero {
+  background-image: var(--fg-grad-hero);
+}
+@utility bg-grad-accent {
+  background-image: var(--fg-grad-accent);
+}
+@utility bg-sider {
+  background-image: var(--fg-sider);
+}
+@utility bg-sider-active {
+  background-image: var(--fg-sider-active);
+}
